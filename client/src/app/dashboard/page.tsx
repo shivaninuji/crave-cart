@@ -32,12 +32,12 @@ const Dashboard = () => {
           <h1 className="text-4xl font-semibold">
             Hello, {userData.displayName}
           </h1>
-          <p className="text-primary/75">What's on your menu today?</p>
+          <p className="text-primary/75">What&apos;s on your menu today?</p>
         </div>
       ) : (
         <div className="flex flex-col gap-2 py-20">
           <h1 className="text-4xl font-semibold">Hello</h1>
-          <p className="text-primary/75">What's on your menu today?</p>
+          <p className="text-primary/75">What&apos;s on your menu today?</p>
         </div>
       )}
       <Food />
