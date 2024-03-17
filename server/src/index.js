@@ -6,6 +6,7 @@ import { foodRouter } from "./routes/foodRoutes.js";
 import { orderRouter } from "./routes/orderRoutes.js";
 import session from "express-session";
 import passport from "passport";
+
 import {
   initializeGoogleOAuth,
   googleAuth,
@@ -64,58 +65,6 @@ app.use(passport.session());
 app.get("/auth/google", googleAuth);
 app.get("/auth/google/callback", googleAuthCallback);
 
-// passport.use(
-//   new OAuth2Strategy(
-//     {
-//       clientID: process.env.GOOGLE_CLIENT_ID,
-//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-//       callbackURL: "/auth/google/callback",
-//       scope: ["profile", "email"],
-//     },
-//     async (accessToken, refreshToken, profile, done) => {
-//       try {
-//         let user = await UserModel.findOne({ googleId: profile.id });
-
-//         if (!user) {
-//           user = new UserModel({
-//             googleId: profile.id,
-//             displayName: profile.displayName,
-//             email: profile.emails[0].value,
-//             image: profile.photos[0].value,
-//           });
-
-//           await user.save();
-//         }
-
-//         return done(null, user);
-//       } catch (error) {
-//         return done(error, null);
-//       }
-//     }
-//   )
-// );
-
-// passport.serializeUser((user, done) => {
-//   done(null, user);
-// });
-
-// passport.deserializeUser((user, done) => {
-//   done(null, user);
-// });
-
-// app.get(
-//   "/auth/google",
-//   passport.authenticate("google", { scope: ["profile", "email"] })
-// );
-
-// app.get(
-//   "/auth/google/callback",
-//   passport.authenticate("google", {
-//     successRedirect: `${client}/dashboard`,
-//     failureRedirect: `${client}/login`,
-//   })
-// );
-
 app.get("/login/success", async (req, res) => {
   if (req.user) {
     res.status(200).json({ message: "user Login", user: req.user });
@@ -133,7 +82,6 @@ app.get("/logout", (req, res, next) => {
   });
 });
 
-// Start the server and listen on the specified port
 app.listen(port, () =>
   console.log(`Server running on port ${port}, http://localhost:${port}`)
 );

@@ -12,7 +12,8 @@ const router = express.Router();
 router.get("/", getFoodItems);
 
 // Route to add a new food item
-router.post("/", verifyToken, addFoodItem);
+// router.post("/", verifyToken, addFoodItem);
+router.post("/", addFoodItem);
 
 // Route to recommend food items based on entered letters
 router.get("/recommend", recommendFoodItems);
