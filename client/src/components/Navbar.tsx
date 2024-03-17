@@ -38,8 +38,11 @@ const Navbar: React.FC = () => {
     <div className="fixed backdrop-blur-md top-0 p-5 w-full flex justify-center left-0 z-50 bg-background/50">
       <div className="flex max-w-6xl w-full justify-between items-center">
         <div>
-          <Link href={userData ? "/dashboard" : "/"}>
-            <Croissant />
+          <Link
+            className="flex justify-center items-center gap-2 font-semibold tracking-wide"
+            href={userData ? "/dashboard" : "/"}
+          >
+            <Croissant /> Crave Cart
           </Link>
         </div>
         {userData ? (
