@@ -1,27 +1,31 @@
 "use client";
 import React, { useEffect, useState } from "react";
-// import "./header.css";
-// import { NavLink } from "react-router-dom";
 import axios from "axios";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Croissant } from "lucide-react";
 
-const Navbar = () => {
-  const [userdata, setUserdata] = useState({});
-  console.log("response", userdata);
+interface UserData {
+  displayName: string;
+  image: string;
+}
+
+const Navbar: React.FC = () => {
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   const getUser = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/login/sucess", {
-        withCredentials: true,
-      });
-
-      setUserdata(response.data.user);
+      const response = await axios.get<{ user: UserData }>(
+        "http://localhost:3001/login/sucess",
+        { withCredentials: true }
+      );
+      setUserData(response.data.user);
     } catch (error) {
       console.log("error", error);
     }
   };
 
-  // logoout
   const logout = () => {
     window.open("http://localhost:3001/logout", "_self");
   };
@@ -29,45 +33,35 @@ const Navbar = () => {
   useEffect(() => {
     getUser();
   }, []);
+
   return (
-    <>
-      <header>
-        <nav>
-          <div className="left">
-            <h1>Harsh Pathak</h1>
+    <div className="fixed backdrop-blur-md top-0 p-5 w-full flex justify-center left-0 z-50 bg-background/50">
+      <div className="flex max-w-6xl w-full justify-between items-center">
+        <div>
+          <Link href={userData ? "/dashboard" : "/"}>
+            <Croissant />
+          </Link>
+        </div>
+        {userData ? (
+          <div className="flex gap-5">
+            <Button variant={"outline"}>Hello, {userData.displayName}</Button>
+            <Avatar>
+              <AvatarImage src={userData.image} />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <Button variant={"destructive"} onClick={logout}>
+              Logout
+            </Button>
           </div>
-          <div className="right">
-            <ul>
-              <li>
-                <Link href="/">Home </Link>
-              </li>
-              {Object?.keys(userdata)?.length > 0 ? (
-                <>
-                  <li style={{ color: "black", fontWeight: "bold" }}>
-                    {userdata?.displayName}
-                  </li>
-                  <li>
-                    <Link href="/dashboard">Dashboard</Link>
-                  </li>
-                  <li onClick={logout}>Logout</li>
-                  <li>
-                    <img
-                      src={userdata?.image}
-                      style={{ width: "50px", borderRadius: "50%" }}
-                      alt=""
-                    />
-                  </li>
-                </>
-              ) : (
-                <li>
-                  <Link href="/login">Login</Link>
-                </li>
-              )}
-            </ul>
+        ) : (
+          <div className="flex gap-3">
+            <Link href="/login">
+              <Button>Login</Button>
+            </Link>
           </div>
-        </nav>
-      </header>
-    </>
+        )}
+      </div>
+    </div>
   );
 };
 
