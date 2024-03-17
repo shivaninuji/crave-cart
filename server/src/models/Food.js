@@ -10,11 +10,13 @@ const FoodSchema = new mongoose.Schema({
   imageUrl: { type: String, required: true },
   diet: { type: String, required: true, enum: ["veg", "non-veg", "dessert"] },
   description: { type: String, required: true },
-  price: { type: Number, required: true },
+  price: { type: String, required: true },
   userOwner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
+    // type: mongoose.Schema.Types.ObjectId,
+    type: String,
     required: true,
+    // ref: "users",
+    // required: true,
   },
 });
 export const FoodModel = mongoose.model("food", FoodSchema);

@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   description: "Your gateway to gourmet cravings delivered with a click.",
 };
 
+import { Toaster } from "@/components/ui/toaster";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -23,6 +25,7 @@ export default function RootLayout({
         <div className="px-5 w-full flex justify-center">
           <div className="max-w-6xl">{children}</div>
         </div>
+        <Toaster />
       </body>
     </html>
   );

@@ -52,7 +52,9 @@ const Navbar: React.FC = () => {
         </div>
         {userData ? (
           <div className="flex gap-5">
-            {/* <Button variant={"outline"}>Hello, {userData.displayName}</Button> */}
+            <Link href="/dashboard/add">
+              <Button variant={"secondary"}>Add Food</Button>
+            </Link>
             <Avatar>
               <AvatarImage src={userData.image} />
               <AvatarFallback>CN</AvatarFallback>
