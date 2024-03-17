@@ -46,12 +46,13 @@ const Navbar: React.FC = () => {
             className="flex justify-center items-center gap-2 font-semibold tracking-wide"
             href={userData ? "/dashboard" : "/"}
           >
-            <Croissant /> <span className="md:flex hidden">Crave Cart</span>
+            <Croissant />
+            {userData ? <span className="md:flex hidden">Crave Cart</span> : ""}
           </Link>
         </div>
         {userData ? (
           <div className="flex gap-5">
-            <Button variant={"outline"}>Hello, {userData.displayName}</Button>
+            {/* <Button variant={"outline"}>Hello, {userData.displayName}</Button> */}
             <Avatar>
               <AvatarImage src={userData.image} />
               <AvatarFallback>CN</AvatarFallback>
