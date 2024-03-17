@@ -1,17 +1,23 @@
-const dotenv = require("dotenv");
-const express = require("express");
-const app = express();
-const cors = require("cors");
-require("./db/connection");
-const PORT = 3001;
-const session = require("express-session");
-const passport = require("passport");
-const OAuth2Strategy = require("passport-google-oauth2").Strategy;
-const userdb = require("./models/userSchema");
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import { foodRouter } from "./routes/foodRoutes.js";
+import { orderRouter } from "./routes/orderRoutes.js";
+import session from "express-session";
+import passport from "passport";
+import {
+  initializeGoogleOAuth,
+  googleAuth,
+  googleAuthCallback,
+} from "./controllers/authController.js";
 
 dotenv.config();
+const app = express();
 
 const client = process.env.CLIENT;
+
+app.use(express.json());
 
 app.use(
   cors({
@@ -20,9 +26,10 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
 
-// setup session
+app.use("/food", foodRouter);
+app.use("/order", orderRouter);
+
 app.use(
   session({
     secret: process.env.SECRET_KEY,
@@ -31,64 +38,85 @@ app.use(
   })
 );
 
-// setuppassport
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+
+db.on("error", (error) => {
+  console.error("MongoDB connection error:", error);
+});
+
+db.once("open", () => {
+  console.log("Connected to MongoDB database!");
+});
+
+const port = process.env.PORT || 3000;
+
+// Initialize Google OAuth
+initializeGoogleOAuth();
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(
-  new OAuth2Strategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
-      scope: ["profile", "email"],
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        let user = await userdb.findOne({ googleId: profile.id });
+app.get("/auth/google", googleAuth);
+app.get("/auth/google/callback", googleAuthCallback);
 
-        if (!user) {
-          user = new userdb({
-            googleId: profile.id,
-            displayName: profile.displayName,
-            email: profile.emails[0].value,
-            image: profile.photos[0].value,
-          });
+// passport.use(
+//   new OAuth2Strategy(
+//     {
+//       clientID: process.env.GOOGLE_CLIENT_ID,
+//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//       callbackURL: "/auth/google/callback",
+//       scope: ["profile", "email"],
+//     },
+//     async (accessToken, refreshToken, profile, done) => {
+//       try {
+//         let user = await UserModel.findOne({ googleId: profile.id });
 
-          await user.save();
-        }
+//         if (!user) {
+//           user = new UserModel({
+//             googleId: profile.id,
+//             displayName: profile.displayName,
+//             email: profile.emails[0].value,
+//             image: profile.photos[0].value,
+//           });
 
-        return done(null, user);
-      } catch (error) {
-        return done(error, null);
-      }
-    }
-  )
-);
+//           await user.save();
+//         }
 
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
+//         return done(null, user);
+//       } catch (error) {
+//         return done(error, null);
+//       }
+//     }
+//   )
+// );
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
+// passport.serializeUser((user, done) => {
+//   done(null, user);
+// });
 
-// initial google ouath login
-app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
+// passport.deserializeUser((user, done) => {
+//   done(null, user);
+// });
 
-app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    successRedirect: `${client}/dashboard`,
-    failureRedirect: `${client}/login`,
-  })
-);
+// app.get(
+//   "/auth/google",
+//   passport.authenticate("google", { scope: ["profile", "email"] })
+// );
 
-app.get("/login/sucess", async (req, res) => {
+// app.get(
+//   "/auth/google/callback",
+//   passport.authenticate("google", {
+//     successRedirect: `${client}/dashboard`,
+//     failureRedirect: `${client}/login`,
+//   })
+// );
+
+app.get("/login/success", async (req, res) => {
   if (req.user) {
     res.status(200).json({ message: "user Login", user: req.user });
   } else {
@@ -105,6 +133,7 @@ app.get("/logout", (req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server started at port: ${PORT}`);
-});
+// Start the server and listen on the specified port
+app.listen(port, () =>
+  console.log(`Server running on port ${port}, http://localhost:${port}`)
+);

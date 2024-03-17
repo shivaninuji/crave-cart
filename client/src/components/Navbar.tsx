@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
   const getUser = async () => {
     try {
       const response = await axios.get<{ user: UserData }>(
-        "http://localhost:3001/login/sucess",
+        "http://localhost:3001/login/success",
         { withCredentials: true }
       );
       setUserData(response.data.user);
