@@ -1,5 +1,8 @@
 import { FoodModel } from "../models/Food.js";
 import { OrderModel } from "../models/Order.js";
+import dotenv from "dotenv";
+dotenv.config();
+import twilio from "twilio";
 
 // Controller function to place a new order
 export async function placeOrder(req, res) {
@@ -15,7 +18,28 @@ export async function placeOrder(req, res) {
 
     // Save the order to the database
     await order.save();
+    const accountSID = process.env.AccountSID;
+    const authTOKEN = process.env.authTOKEN;
+    const client = twilio(accountSID, authTOKEN);
+    console.log(" Order placed successfully!");
+    const sendSMS = async (body) => {
+      let msgOptions = {
+        from: process.env.TwilioNum,
+        to: process.env.MyNumber,
+        body,
+      };
 
+      try {
+        // Twilio SMS sending logic
+        await client.messages.create(msgOptions);
+        console.log("SMS sent successfully!");
+      } catch (error) {
+        console.error("Error sending SMS:", error);
+      }
+
+      // Additional logic related to SMS sending (if any)
+    };
+    sendSMS("Your order has been placed Successfully");
     res.status(201).json({ message: "Order placed successfully" });
   } catch (error) {
     console.error("Error placing order:", error);
