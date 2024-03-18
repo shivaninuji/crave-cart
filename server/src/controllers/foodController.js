@@ -46,11 +46,11 @@ export async function addFoodItem(req, res) {
     } = req.body;
 
     // Check if the user exists
-    const user = await UserModel.findById(userOwner);
-    if (!user) {
-      console.error("User not found");
-      return res.status(404).json({ message: "User not found" });
-    }
+    // const user = await UserModel.findById(userOwner);
+    // if (!user) {
+    //   console.error("User not found");
+    //   return res.status(404).json({ message: "User not found" });
+    // }
 
     // Create and save the new food item
     const newFoodItem = await FoodModel.create({
@@ -61,7 +61,8 @@ export async function addFoodItem(req, res) {
       diet,
       description,
       price,
-      userOwner: user._id,
+      // userOwner: user._id,
+      userOwner,
     });
 
     // Return a success response

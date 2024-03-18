@@ -3,15 +3,16 @@ import { OrderModel } from "../models/Order.js";
 // Controller function to place a new order
 export async function placeOrder(req, res) {
   try {
-    const { foodId, userId, orderId, userAddressId, paymentMode } = req.body;
+    // const { foodId, userId, orderId, userAddressId, paymentMode } = req.body;
+    const { foodId, userId } = req.body;
 
     // Create a new order
     const order = new OrderModel({
       foodId,
       userId,
-      orderId,
-      userAddressId,
-      paymentMode,
+      // orderId,
+      // userAddressId,
+      // paymentMode,
     });
 
     // Save the order to the database

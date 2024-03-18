@@ -49,6 +49,6 @@ export const googleAuth = passport.authenticate("google", {
 });
 
 export const googleAuthCallback = passport.authenticate("google", {
-  successRedirect: `${process.env.CLIENT}/dashboard`,
-  failureRedirect: `${process.env.CLIENT}/login`,
+  successRedirect: `${process.env.CLIENT}/login`,
+  failureRedirect: `${process.env.CLIENT}/`,
 });
