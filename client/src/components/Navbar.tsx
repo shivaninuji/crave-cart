@@ -4,7 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Croissant } from "lucide-react";
+import { Cloud, Croissant, MapPinned, PlusCircle } from "lucide-react";
 
 interface UserData {
   displayName: string;
@@ -52,8 +52,20 @@ const Navbar: React.FC = () => {
         </div>
         {userData ? (
           <div className="flex gap-5 items-center">
+            <Link href="/dashboard/weather">
+              <Button variant={"ghost"}>
+                <Cloud />
+              </Button>
+            </Link>
             <Link href="/dashboard/add">
-              <Button variant={"outline"}>Add Food</Button>
+              <Button variant={"ghost"}>
+                <PlusCircle />
+              </Button>
+            </Link>
+            <Link href="/dashboard/map">
+              <Button variant={"ghost"}>
+                <MapPinned />
+              </Button>
             </Link>
             Hello, {userData.displayName}
             <Avatar>

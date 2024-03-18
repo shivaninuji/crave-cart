@@ -1,6 +1,23 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Sun, Cloud, CloudRain } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const Home = () => {
   const [temperatureData, setTemperatureData] = useState<number[]>([]);
@@ -50,13 +67,13 @@ const Home = () => {
 
   const suggestFood = (temperature: number) => {
     if (temperature < 15) {
-      setSuggestedFood("Hot soup or stew");
+      setSuggestedFood("Hot Soup or Stew");
     } else if (temperature >= 15 && temperature < 25) {
-      setSuggestedFood("Pasta or noodles");
+      setSuggestedFood("Pasta or Noodles");
     } else if (temperature >= 25 && temperature < 30) {
-      setSuggestedFood("Salad or sandwiches");
+      setSuggestedFood("Salad or Sandwiches");
     } else {
-      setSuggestedFood("Ice cream or cold drinks");
+      setSuggestedFood("Ice Cream or Cold Drinks");
     }
   };
 
@@ -75,17 +92,32 @@ const Home = () => {
 
   return (
     <div className="flex min-h-[100dvh] justify-center items-center">
-      <div>
-        <h1>Weather Forecast</h1>
-        <ul>
-          {temperatureData.map((temp, index) => (
-            <li key={index}>
-              {weatherIcons[index]} Temperature at {index + 1} hour: {temp}°C
-            </li>
-          ))}
-        </ul>
-        <h2>Suggested Food: {suggestedFood}</h2>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Weather Forecast</CardTitle>
+          {/* <CardDescription>Card Description</CardDescription> */}
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Temperature</TableHead>
+                <TableHead>In</TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {temperatureData.map((temp, index) => (
+                <TableRow key={index}>
+                  <TableCell>{temp}°C</TableCell>
+                  <TableCell>{index + 1} Hour</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+        <CardFooter>Suggested Food: {suggestedFood}</CardFooter>
+      </Card>
     </div>
   );
 };
