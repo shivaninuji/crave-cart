@@ -12,6 +12,14 @@ import { Button } from "./ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import axios from "axios";
 
+import { useToast } from "@/components/ui/use-toast";
+
+import emailjs from "emailjs-com";
+
+const emailServiceId = process.env.NEXT_PUBLIC_SERVICE_ID!;
+const emailTemplateId = process.env.NEXT_PUBLIC_TEMPLATE_ID!;
+const emailApiKey = process.env.NEXT_PUBLIC_API_KEY!;
+
 interface FoodItem {
   _id: string;
   name: string;
@@ -29,6 +37,8 @@ interface UserData {
 const Food = () => {
   const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
   const [userData, setUserData] = useState<UserData | null>(null);
+
+  const { toast } = useToast();
 
   const getUser = async () => {
     try {
@@ -68,6 +78,30 @@ const Food = () => {
       });
       const data = await response.json();
       console.log("Order placed successfully:", data);
+      try {
+        const templateParams = {
+          from_name: "Crave Cart",
+          to_name: userData?.displayName,
+        };
+
+        await emailjs.send(
+          emailServiceId,
+          emailTemplateId,
+          templateParams,
+          emailApiKey
+        );
+
+        toast({
+          title: "Order Placed! Check your mail.",
+          variant: "success",
+        });
+      } catch (error) {
+        toast({
+          title: "Error! Please try again.",
+          variant: "destructive",
+        });
+        console.error("Error sending email:", error);
+      }
       // Handle success, maybe show a success message or update UI accordingly
     } catch (error) {
       console.error("Error placing order:", error);

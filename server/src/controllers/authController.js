@@ -3,6 +3,8 @@ import passport from "passport";
 import { Strategy as OAuth2Strategy } from "passport-google-oauth2";
 import dotenv from "dotenv";
 dotenv.config();
+
+import { UsersModel } from "../models/Users.js";
 export const initializeGoogleOAuth = () => {
   passport.use(
     new OAuth2Strategy(

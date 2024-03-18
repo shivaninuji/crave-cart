@@ -85,7 +85,7 @@ const AddRecipe = () => {
     <div className="px-5 min-h-[100dvh] py-32">
       <div className="mx-auto max-w-2xl text-center">
         <h1 className="w-full max-w-6xl mb-10 text-2xl font-semibold">
-          Add Products
+          Add Food
         </h1>
       </div>
       <form onSubmit={handleSubmit} className="mx-auto max-w-xl">
