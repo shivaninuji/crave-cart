@@ -11,6 +11,10 @@ interface MapProps {
   toLongitude: number;
 }
 
+interface CustomRoutingControlOptions extends L.Routing.RoutingControlOptions {
+  createMarker?: (i: number, wp: L.LatLng) => L.Marker;
+}
+
 function Map({
   fromLatitude,
   fromLongitude,
@@ -37,7 +41,7 @@ function Map({
 
       // Create a routing control only if it doesn't exist
       if (!routingControlRef.current) {
-        routingControlRef.current = L.Routing.control({
+        const routingControlOptions: CustomRoutingControlOptions = {
           waypoints: [from, to],
           routeWhileDragging: true,
           createMarker: function (i: number, wp: L.LatLng) {
@@ -51,7 +55,10 @@ function Map({
               icon: icon,
             });
           },
-        }).addTo(map as L.Map);
+        };
+        routingControlRef.current = L.Routing.control(
+          routingControlOptions
+        ).addTo(map as L.Map);
       } else {
         // If the routing control already exists, simply set the new waypoints
         routingControlRef.current.setWaypoints([from, to]);
