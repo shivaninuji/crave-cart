@@ -1,3 +1,4 @@
+import { FoodModel } from "../models/Food.js";
 import { OrderModel } from "../models/Order.js";
 
 // Controller function to place a new order
@@ -10,20 +11,35 @@ export async function placeOrder(req, res) {
     const order = new OrderModel({
       foodId,
       userId,
-      // orderId,
-      // userAddressId,
-      // paymentMode,
     });
 
     // Save the order to the database
     await order.save();
 
-    res
-      .status(201)
-      .json({ message: "Order placed successfully", orderId: order._id });
+    res.status(201).json({ message: "Order placed successfully" });
   } catch (error) {
     console.error("Error placing order:", error);
     res.status(500).json({ error: "Failed to place order" });
+  }
+}
+
+export async function getOrdersWithFoodDetails(req, res) {
+  try {
+    // Get all orders (or filter based on user ID if needed)
+    const orders = await OrderModel.find(); // Replace with filter if needed
+
+    // Fetch details of the food items for each order
+    const ordersWithFoodDetails = await Promise.all(
+      orders.map(async (order) => {
+        const food = await FoodModel.findById(order.foodId);
+        return { ...order._doc, food }; // Combine order and food details
+      })
+    );
+
+    res.json(ordersWithFoodDetails);
+  } catch (error) {
+    console.error("Error fetching orders with food details:", error);
+    res.status(500).json({ error: "Failed to fetch orders" });
   }
 }
 

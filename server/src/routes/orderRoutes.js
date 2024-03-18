@@ -4,6 +4,7 @@ import {
   getAllOrders,
   getOrdersByUserId,
   updateOrderStatus,
+  getOrdersWithFoodDetails,
 } from "../controllers/orderController.js";
 import { verifyToken } from "../middlewares/middleWareJWT.js";
 
@@ -12,8 +13,10 @@ const router = express.Router();
 // Route to place a new order
 router.post("/", placeOrder);
 
+router.get("/", getOrdersWithFoodDetails);
+
 // Route to fetch all orders
-router.get("/", getAllOrders);
+router.get("/details", getAllOrders);
 
 // Route to fetch orders by user ID
 router.get("/user/:userId", getOrdersByUserId);

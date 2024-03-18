@@ -3,19 +3,15 @@ import mongoose from "mongoose";
 const OrderSchema = new mongoose.Schema({
   foodId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Food",
-    // required: true,
+    ref: "food",
   },
   userId: {
-    // type: mongoose.Schema.Types.ObjectId,
-    // ref: "User",
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
     type: String,
     required: true,
   },
-  // orderId: {
-  //   type: String,
-  //   required: true,
-  // },
+
   createdAt: {
     type: Date,
     default: Date.now,
@@ -30,7 +26,6 @@ const OrderSchema = new mongoose.Schema({
     type: String,
     enum: ["pending", "processing", "completed", "cancelled"],
     default: "pending",
-    // required: true,
   },
 });
 
