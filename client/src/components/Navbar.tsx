@@ -51,14 +51,18 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
         {userData ? (
-          <div className="flex gap-5">
-            <Link href="/dashboard/add">
+          <div className="flex gap-5 items-center">
+            {/* <Link href="/dashboard/add">
               <Button variant={"secondary"}>Add Food</Button>
-            </Link>
+            </Link> */}
+            Hello, {userData.displayName}
             <Avatar>
               <AvatarImage src={userData.image} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
+            {/* <Button variant={"destructive"} onClick={logout}>
+              Logout
+            </Button> */}
             <Button variant={"destructive"} onClick={logout}>
               Logout
             </Button>
