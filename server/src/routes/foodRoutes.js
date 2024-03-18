@@ -2,7 +2,7 @@ import express from "express";
 import {
   getFoodItems,
   addFoodItem,
-  recommendFoodItems,
+  searchFoodItems,
 } from "../controllers/foodController.js";
 import { verifyToken } from "../middlewares/middleWareJWT.js";
 
@@ -16,6 +16,6 @@ router.get("/", getFoodItems);
 router.post("/", addFoodItem);
 
 // Route to recommend food items based on entered letters
-router.get("/recommend", recommendFoodItems);
+router.get("/recommend/:query", searchFoodItems);
 
 export { router as foodRouter };

@@ -6,39 +6,24 @@ import { foodRouter } from "./routes/foodRoutes.js";
 import { orderRouter } from "./routes/orderRoutes.js";
 import session from "express-session";
 import passport from "passport";
-
 import {
   initializeGoogleOAuth,
   googleAuth,
   googleAuthCallback,
 } from "./controllers/authController.js";
+import { userRouter } from "./routes/userRoutes.js";
 
 dotenv.config();
 const app = express();
 
-const client = process.env.CLIENT;
-
 app.use(express.json());
-
-app.use(
-  cors({
-    origin: client,
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.use("/food", foodRouter);
 app.use("/order", orderRouter);
+app.use("/auth", userRouter);
 
-app.use(
-  session({
-    secret: process.env.SECRET_KEY,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-
+// Connect to MongoDB using the provided URI
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -54,7 +39,31 @@ db.once("open", () => {
   console.log("Connected to MongoDB database!");
 });
 
-const port = process.env.PORT || 3000;
+// Define the port for the server, using the provided port or defaulting to 3001
+const port = process.env.PORT || 3001;
+
+// Start the server and listen on the specified port
+app.listen(port, () =>
+  console.log(`Server running on port ${port}, http://localhost:${port}`)
+);
+
+//Google OAuth2.0
+const client = process.env.CLIENT;
+app.use(
+  cors({
+    origin: client,
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
+
+app.use(
+  session({
+    secret: "hi",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // Initialize Google OAuth
 initializeGoogleOAuth();
@@ -81,7 +90,3 @@ app.get("/logout", (req, res, next) => {
     res.redirect(client);
   });
 });
-
-app.listen(port, () =>
-  console.log(`Server running on port ${port}, http://localhost:${port}`)
-);

@@ -1,5 +1,5 @@
 import { FoodModel } from "../models/Food.js";
-import { UserModel } from "../models/Users.js";
+import { UserModel } from "../models/User.js";
 
 // Function to fetch food items with filters
 export async function getFoodItems(req, res) {
@@ -76,20 +76,30 @@ export async function addFoodItem(req, res) {
   }
 }
 
-// Function to recommend food items based on entered letters
-export async function recommendFoodItems(prefix) {
+import { query } from "express";
+// Function to search for food items by name
+export async function searchFoodItems(req, res) {
   try {
-    // Create a regular expression to match food names starting with the given prefix
-    const regex = new RegExp(`^${prefix}`, "i");
+    // Get the search query from the request parameters
+    const searchTerm = req.query.name?.toLowerCase(); // Lowercase for case-insensitive search
 
-    // Find food items whose names match the regex
-    const recommendedItems = await RecipeModel.find({ name: regex })
-      .select("name description price imageUrl")
+    // Check if search term is provided
+    if (!searchTerm) {
+      return res.status(400).json({ message: "Please provide a search term" });
+    }
+
+    // Build the search query using regular expression for partial matches
+    const searchRegex = new RegExp(searchTerm, "i"); // 'i' flag for case-insensitive
+
+    // Find recipes matching the search term
+    const recipes = await FoodModel.find({ name: searchRegex })
+      .select("name description price imageUrl") // Select specific fields
       .exec();
 
-    return recommendedItems;
+    // Return the search results
+    res.json(recipes);
   } catch (error) {
-    console.error("Error recommending food items:", error);
-    throw error;
+    console.error("Error searching food items:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }

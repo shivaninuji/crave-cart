@@ -1,7 +1,6 @@
 // authController.js
 import passport from "passport";
 import { Strategy as OAuth2Strategy } from "passport-google-oauth2";
-import { UserModel } from "../models/Users.js";
 import dotenv from "dotenv";
 dotenv.config();
 export const initializeGoogleOAuth = () => {
@@ -15,7 +14,7 @@ export const initializeGoogleOAuth = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          let user = await UserModel.findOne({ googleId: profile.id });
+          let user = await UsersModel.findOne({ googleId: profile.id });
 
           if (!user) {
             user = new UserModel({
