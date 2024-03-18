@@ -19,7 +19,7 @@ export const initializeGoogleOAuth = () => {
           let user = await UsersModel.findOne({ googleId: profile.id });
 
           if (!user) {
-            user = new UserModel({
+            user = new UsersModel({
               googleId: profile.id,
               displayName: profile.displayName,
               email: profile.emails[0].value,
