@@ -14,14 +14,25 @@ export const verifyToken = (req, res, next) => {
         return res.sendStatus(403); // Token verification failed
       }
 
-      // Extract user role and ID from the decoded token
-      const { id, role } = decodedToken;
+      // Extract user role (if it exists) and ID from the decoded token
+      const { id, role = "" } = decodedToken || {}; // Use empty object as default
 
-      // Attach user role and ID to the request object for later use
+      // Attach user information to the request object
       req.user = { id, role };
 
-      // Token is valid, proceed to the next middleware or route
-      next();
+      // Check if ID exists and then role (optional)
+      if (id) {
+        if (role === "user" || role === "") {
+          // Allow access for any role or no role if ID exists
+          next();
+        } else {
+          console.error("Unauthorized: Insufficient role");
+          return res.sendStatus(403); // Forbidden access for other roles (if checking role)
+        }
+      } else {
+        console.error("Unauthorized: Missing ID in token");
+        return res.sendStatus(403); // Forbidden access if ID is missing
+      }
     });
   } else {
     console.log("Token not provided");

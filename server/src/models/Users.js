@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 // Define a MongoDB schema for user data
-const UserSchema = new mongoose.Schema(
+const UsersSchema = new mongoose.Schema(
   {
     googleId: { type: String },
     displayName: { type: String },
@@ -17,4 +17,4 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-export const UserModel = mongoose.model("users", UserSchema);
+export const UsersModel = mongoose.model("users", UsersSchema);

@@ -1,5 +1,5 @@
 import { FoodModel } from "../models/Food.js";
-import { UserModel } from "../models/Users.js";
+import { UserModel } from "../models/User.js";
 
 // Function to fetch food items with filters
 export async function getFoodItems(req, res) {
