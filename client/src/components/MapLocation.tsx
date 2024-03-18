@@ -4,9 +4,21 @@ import "leaflet-routing-machine";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "leaflet/dist/leaflet.css";
 
-function Map({ fromLatitude, fromLongitude, toLatitude, toLongitude }) {
-  const mapRef = useRef(null);
-  const routingControlRef = useRef(null);
+interface MapProps {
+  fromLatitude: number;
+  fromLongitude: number;
+  toLatitude: number;
+  toLongitude: number;
+}
+
+function Map({
+  fromLatitude,
+  fromLongitude,
+  toLatitude,
+  toLongitude,
+}: MapProps) {
+  const mapRef = useRef<L.Map | null>(null);
+  const routingControlRef = useRef<L.Routing.Control | null>(null);
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -28,18 +40,18 @@ function Map({ fromLatitude, fromLongitude, toLatitude, toLongitude }) {
         routingControlRef.current = L.Routing.control({
           waypoints: [from, to],
           routeWhileDragging: true,
-          createMarker: function (i, wp) {
+          createMarker: function (i: number, wp: L.LatLng) {
             const iconUrl = i === 0 ? "/from.png" : "/to.png";
             const icon = L.icon({
               iconUrl: iconUrl,
               iconSize: [32, 32], // Customize the size if needed
               iconAnchor: [16, 32], // Customize the anchor point if needed
             });
-            return L.marker(wp.latLng, {
+            return L.marker(wp, {
               icon: icon,
             });
           },
-        }).addTo(map);
+        }).addTo(map as L.Map);
       } else {
         // If the routing control already exists, simply set the new waypoints
         routingControlRef.current.setWaypoints([from, to]);
@@ -47,7 +59,7 @@ function Map({ fromLatitude, fromLongitude, toLatitude, toLongitude }) {
 
       // Fit the map to the bounds of the markers and route
       const bounds = L.latLngBounds(from, to);
-      map.fitBounds(bounds);
+      (map as L.Map).fitBounds(bounds);
     }
   }, [fromLatitude, fromLongitude, toLatitude, toLongitude]);
 
