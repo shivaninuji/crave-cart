@@ -75,31 +75,14 @@ export async function addFoodItem(req, res) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
-
-import { query } from "express";
-// Function to search for food items by name
-export async function searchFoodItems(req, res) {
+export const searchfood = async (req, res) => {
   try {
-    // Get the search query from the request parameters
-    const searchTerm = req.query.name?.toLowerCase(); // Lowercase for case-insensitive search
-
-    // Check if search term is provided
-    if (!searchTerm) {
-      return res.status(400).json({ message: "Please provide a search term" });
-    }
-
-    // Build the search query using regular expression for partial matches
-    const searchRegex = new RegExp(searchTerm, "i"); // 'i' flag for case-insensitive
-
-    // Find recipes matching the search term
-    const recipes = await FoodModel.find({ name: searchRegex })
-      .select("name description price imageUrl") // Select specific fields
-      .exec();
-
-    // Return the search results
-    res.json(recipes);
+    const query = req.params.query;
+    // Perform a search query to find blog posts with titles matching the entered query
+    const regex = new RegExp(query, "i"); // Case-insensitive search
+    const blogs = await FoodModel.find({ name: regex });
+    res.status(200).json(blogs);
   } catch (error) {
-    console.error("Error searching food items:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ error: error.message });
   }
-}
+};
