@@ -23,14 +23,13 @@ app.use("/food", foodRouter);
 app.use("/order", orderRouter);
 app.use("/auth", userRouter);
 
+const mongo = process.env.MONGO_URI;
+
 // Connect to MongoDB using the provided URI
-mongoose.connect(
-  "mongodb+srv://srajankumar:zoro123@cluster0.6ztmanv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+mongoose.connect(mongo, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const db = mongoose.connection;
 
