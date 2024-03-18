@@ -10,15 +10,15 @@ import { verifyToken } from "../middlewares/middleWareJWT.js";
 const router = express.Router();
 
 // Route to place a new order
-router.post("/", verifyToken, placeOrder);
+router.post("/", placeOrder);
 
 // Route to fetch all orders
-router.get("/", verifyToken, getAllOrders);
+router.get("/", getAllOrders);
 
 // Route to fetch orders by user ID
-router.get("/user/:userId", verifyToken, getOrdersByUserId);
+router.get("/user/:userId", getOrdersByUserId);
 
 // Route to update order status by order ID
-router.put("/:orderId/status", verifyToken, updateOrderStatus);
+router.put("/:orderId/status", updateOrderStatus);
 
 export { router as orderRouter };

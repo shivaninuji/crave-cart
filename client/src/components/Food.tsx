@@ -8,8 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Image from "next/image";
 import { Button } from "./ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import axios from "axios";
 
 interface FoodItem {
   _id: string;
@@ -19,8 +20,31 @@ interface FoodItem {
   price: number;
 }
 
+interface UserData {
+  displayName: string;
+  image: string;
+  _id: string;
+}
+
 const Food = () => {
   const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  const getUser = async () => {
+    try {
+      const response = await axios.get<{ user: UserData }>(
+        "http://localhost:3001/login/success",
+        { withCredentials: true }
+      );
+      setUserData(response.data.user);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   useEffect(() => {
     fetch("http://localhost:3001/food")
@@ -28,6 +52,28 @@ const Food = () => {
       .then((data: FoodItem[]) => setFoodItems(data))
       .catch((error) => console.error("Error fetching food items:", error));
   }, []);
+
+  const handleOrder = async (foodId: string) => {
+    try {
+      const response = await fetch("http://localhost:3001/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          foodId,
+          userId: userData?._id, // Replace with actual user ID
+          // orderId: "order1", // Replace with actual order ID
+        }),
+      });
+      const data = await response.json();
+      console.log("Order placed successfully:", data);
+      // Handle success, maybe show a success message or update UI accordingly
+    } catch (error) {
+      console.error("Error placing order:", error);
+      // Handle error, show error message or retry logic
+    }
+  };
 
   return (
     <div>
@@ -48,24 +94,30 @@ const Food = () => {
               </CardContent>
               <CardFooter className="flex justify-between">
                 <p>₹ {food.price}</p>
-                <Button>Order</Button>
+                <Button onClick={() => handleOrder(food._id)}>Order</Button>
               </CardFooter>
             </Card>
           ))}
         </div>
       ) : (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
-          {[...Array(5)].map((_, index) => (
+          {[...Array(3)].map((_, index) => (
             <Card key={index}>
               <CardHeader>
-                <CardTitle>sadfasf</CardTitle>
-                <CardDescription>sdfasf</CardDescription>
+                <CardTitle>
+                  <Skeleton className="w-32 h-5"></Skeleton>
+                </CardTitle>
+                <CardDescription>
+                  <Skeleton className="w-60 h-3"></Skeleton>
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="aspect-video w-full bg-green-400 h-full" />
+                <Skeleton className="aspect-video w-80 h-full" />
               </CardContent>
               <CardFooter>
-                <p>$ 20</p>
+                <div className="flex items-center gap-2 w-full">
+                  $ <Skeleton className="w-20 h-5"></Skeleton>
+                </div>
               </CardFooter>
             </Card>
           ))}
